@@ -1,122 +1,109 @@
-import PasswordController from '@/actions/App/Http/Controllers/Settings/PasswordController';
-import InputError from '@/components/input-error';
-import AppLayout from '@/layouts/app-layout';
-import SettingsLayout from '@/layouts/settings/layout';
-import { type BreadcrumbItem } from '@/types';
-import { Transition } from '@headlessui/react';
-import { Form, Head } from '@inertiajs/react';
-import { useRef } from 'react';
+import { useRef } from "react"
+import { Head, useForm } from "@inertiajs/react"
+import { Card } from "@/components/ui/card"
+import { Form } from "@/components/ui/form"
+import { TextField } from "@/components/ui/text-field"
+import { Button } from "@/components/ui/button"
+import AppLayout from "@/layouts/app-layout"
+import SettingsLayout from "@/pages/settings/settings-layout"
+import PasswordController from "@/actions/App/Http/Controllers/Settings/PasswordController"
 
-import HeadingSmall from '@/components/heading-small';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/password';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Password settings',
-        href: edit().url,
-    },
-];
+const title = "Change Password"
 
 export default function Password() {
-    const passwordInput = useRef<HTMLInputElement>(null);
-    const currentPasswordInput = useRef<HTMLInputElement>(null);
+  const passwordInput = useRef<HTMLInputElement>(null)
+  const currentPasswordInput = useRef<HTMLInputElement>(null)
+  const { data, setData, put, errors, reset, processing, recentlySuccessful } = useForm({
+    current_password: "",
+    password: "",
+    password_confirmation: "",
+  })
 
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Password settings" />
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault()
+    put(PasswordController.update().url, {
+      preserveScroll: true,
+      onSuccess: () => {
+        reset()
+      },
+      onError: () => {
+        if (errors.password) {
+          reset("password", "password_confirmation")
+          passwordInput.current?.focus()
+        }
 
-            <SettingsLayout>
-                <div className="space-y-6">
-                    <HeadingSmall title="Update password" description="Ensure your account is using a long, random password to stay secure" />
+        if (errors.current_password) {
+          reset("current_password")
+          currentPasswordInput.current?.focus()
+        }
+      },
+    })
+  }
 
-                    <Form
-                        {...PasswordController.update.form()}
-                        options={{
-                            preserveScroll: true,
-                        }}
-                        resetOnError={['password', 'password_confirmation', 'current_password']}
-                        resetOnSuccess
-                        onError={(errors) => {
-                            if (errors.password) {
-                                passwordInput.current?.focus();
-                            }
+  return (
+    <>
+      <Head title={title} />
+      <h1 className="sr-only">{title}</h1>
+      <Card>
+        <Card.Header>
+          <Card.Title>{title}</Card.Title>
+          <Card.Description>
+            Ensure your account is using a long, random password to stay secure.
+          </Card.Description>
+        </Card.Header>
 
-                            if (errors.current_password) {
-                                currentPasswordInput.current?.focus();
-                            }
-                        }}
-                        className="space-y-6"
-                    >
-                        {({ errors, processing, recentlySuccessful }) => (
-                            <>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="current_password">Current password</Label>
+        <Card.Content>
+          <Form validationErrors={errors} onSubmit={submit} className="max-w-lg space-y-6">
+            <TextField
+              label="Current Password"
+              value={data.current_password}
+              onChange={(v) => setData("current_password", v)}
+              type="password"
+              autoComplete="current-password"
+              isRevealable
+              autoFocus
+              isRequired
+            />
 
-                                    <Input
-                                        id="current_password"
-                                        ref={currentPasswordInput}
-                                        name="current_password"
-                                        type="password"
-                                        className="mt-1 block w-full"
-                                        autoComplete="current-password"
-                                        placeholder="Current password"
-                                    />
+            <TextField
+              type="password"
+              name="password"
+              label="Password"
+              value={data.password}
+              autoComplete="current-password"
+              onChange={(v) => setData("password", v)}
+              errorMessage={errors.password}
+              isRevealable
+              isRequired
+            />
 
-                                    <InputError message={errors.current_password} />
-                                </div>
+            <TextField
+              type="password"
+              label="Confirm Password"
+              name="password_confirmation"
+              value={data.password_confirmation}
+              onChange={(v) => setData("password_confirmation", v)}
+              errorMessage={errors.password_confirmation}
+              isRevealable
+              isRequired
+            />
 
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password">New password</Label>
+            <div className="flex items-center gap-4">
+              <Button type="submit" isDisabled={processing}>
+                Save
+              </Button>
 
-                                    <Input
-                                        id="password"
-                                        ref={passwordInput}
-                                        name="password"
-                                        type="password"
-                                        className="mt-1 block w-full"
-                                        autoComplete="new-password"
-                                        placeholder="New password"
-                                    />
-
-                                    <InputError message={errors.password} />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="password_confirmation">Confirm password</Label>
-
-                                    <Input
-                                        id="password_confirmation"
-                                        name="password_confirmation"
-                                        type="password"
-                                        className="mt-1 block w-full"
-                                        autoComplete="new-password"
-                                        placeholder="Confirm password"
-                                    />
-
-                                    <InputError message={errors.password_confirmation} />
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                    <Button disabled={processing}>Save password</Button>
-
-                                    <Transition
-                                        show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-neutral-600">Saved</p>
-                                    </Transition>
-                                </div>
-                            </>
-                        )}
-                    </Form>
-                </div>
-            </SettingsLayout>
-        </AppLayout>
-    );
+              {recentlySuccessful && <p className="text-muted-fg text-sm">Saved.</p>}
+            </div>
+          </Form>
+        </Card.Content>
+      </Card>
+    </>
+  )
 }
+
+Password.layout = (page: any) => (
+  <AppLayout>
+    <SettingsLayout children={page} />
+  </AppLayout>
+)

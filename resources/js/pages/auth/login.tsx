@@ -1,88 +1,100 @@
-import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
-import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
-import { register } from '@/routes';
-import { request } from '@/routes/password';
-import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
+import GuestLayout from "@/layouts/guest-layout"
+import { Head, Form } from "@inertiajs/react"
+import type React from "react"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Link } from "@/components/ui/link"
+import { TextField } from "@/components/ui/text-field"
+import { Loader } from "@/components/ui/loader"
 
 interface LoginProps {
-    status?: string;
-    canResetPassword: boolean;
+  status: string
+  canResetPassword: boolean
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
-    return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
-            <Head title="Log in" />
+export default function Login(args: LoginProps) {
+  const { status, canResetPassword } = args
+  // const { data, setData, post, processing, errors, reset } = useForm({
+  //   email: "",
+  //   password: "",
+  //   remember: "",
+  // })
+  //
+  // useEffect(() => {
+  //   return () => {
+  //     reset("password")
+  //   }
+  // }, [])
+  //
+  // const submit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //
+  //   post("/login")
+  // }
 
-            <Form {...AuthenticatedSessionController.store.form()} resetOnSuccess={['password']} className="flex flex-col gap-6">
-                {({ processing, errors }) => (
-                    <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@example.com"
-                                />
-                                <InputError message={errors.email} />
-                            </div>
+  return (
+    <>
+      <Head title="Log in" />
 
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
-                                        <TextLink href={request()} className="ml-auto text-sm" tabIndex={5}>
-                                            Forgot password?
-                                        </TextLink>
-                                    )}
-                                </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="current-password"
-                                    placeholder="Password"
-                                />
-                                <InputError message={errors.password} />
-                            </div>
+      {status && (
+        <div className="mb-4 font-medium text-emerald-600 text-sm dark:text-emerald-400">
+          {status}
+        </div>
+      )}
 
-                            <div className="flex items-center space-x-3">
-                                <Checkbox id="remember" name="remember" tabIndex={3} />
-                                <Label htmlFor="remember">Remember me</Label>
-                            </div>
-
-                            <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                                {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                                Log in
-                            </Button>
-                        </div>
-
-                        <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={register()} tabIndex={5}>
-                                Sign up
-                            </TextLink>
-                        </div>
-                    </>
-                )}
-            </Form>
-
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
-        </AuthLayout>
-    );
+      <Form
+        method="post"
+        action="/login"
+        resetOnSuccess={["password"]}
+        className="flex flex-col gap-y-4"
+      >
+        {({ processing, errors }) => (
+          <>
+            <TextField
+              label="Email"
+              type="email"
+              name="email"
+              autoComplete="username"
+              autoFocus
+              errorMessage={errors.email}
+              isRequired
+            />
+            <TextField
+              type="password"
+              name="password"
+              label="Password"
+              errorMessage={errors.password}
+              autoComplete="current-password"
+              isRequired
+            />
+            <div className="flex items-center justify-between">
+              <Checkbox name="remember">Remember me</Checkbox>
+              {canResetPassword && (
+                <Link href="/forgot-password" className="sm:text-sm" intent="secondary">
+                  Forgot your password?
+                </Link>
+              )}
+            </div>
+            <Button isPending={processing} type="submit">
+              {processing && <Loader />}
+              Log in
+            </Button>
+            <div className="text-center">
+              <Link href="/register" className="sm:text-sm" intent="secondary">
+                Dont have account? Register
+              </Link>
+            </div>
+          </>
+        )}
+      </Form>
+    </>
+  )
 }
+
+Login.layout = (page: React.ReactNode) => (
+  <GuestLayout
+    header="Login"
+    description="Sign in with your email or continue with a connected account."
+    children={page}
+  />
+)

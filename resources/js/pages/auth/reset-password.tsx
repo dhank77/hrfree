@@ -1,70 +1,74 @@
-import NewPasswordController from '@/actions/App/Http/Controllers/Auth/NewPasswordController';
-import { Form, Head } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
+import GuestLayout from "@/layouts/guest-layout"
+import { Head, Form } from "@inertiajs/react"
+import { Button } from "@/components/ui/button"
+import { TextField } from "@/components/ui/text-field"
+import { Loader } from "@/components/ui/loader"
+import NewPasswordController from "@/actions/App/Http/Controllers/Auth/NewPasswordController"
 
 interface ResetPasswordProps {
-    token: string;
-    email: string;
+  token: string
+  email: string
 }
 
-export default function ResetPassword({ token, email }: ResetPasswordProps) {
-    return (
-        <AuthLayout title="Reset password" description="Please enter your new password below">
-            <Head title="Reset password" />
+export default function ResetPassword(args: ResetPasswordProps) {
+  const { token, email } = args
 
-            <Form
-                {...NewPasswordController.store.form()}
-                transform={(data) => ({ ...data, token, email })}
-                resetOnSuccess={['password', 'password_confirmation']}
-            >
-                {({ processing, errors }) => (
-                    <div className="grid gap-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" name="email" autoComplete="email" value={email} className="mt-1 block w-full" readOnly />
-                            <InputError message={errors.email} className="mt-2" />
-                        </div>
+  return (
+    <>
+      <Head title="Reset Password" />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                name="password"
-                                autoComplete="new-password"
-                                className="mt-1 block w-full"
-                                autoFocus
-                                placeholder="Password"
-                            />
-                            <InputError message={errors.password} />
-                        </div>
+      <Form
+        {...NewPasswordController.store.form()}
+        className="space-y-6"
+        transform={(data) => ({ ...data, token, email })}
+      >
+        {({ processing, errors }) => (
+          <>
+            <TextField
+              label="Email"
+              isRequired
+              errorMessage={errors.email}
+              type="email"
+              name="email"
+              autoComplete="username"
+            />
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="password_confirmation">Confirm password</Label>
-                            <Input
-                                id="password_confirmation"
-                                type="password"
-                                name="password_confirmation"
-                                autoComplete="new-password"
-                                className="mt-1 block w-full"
-                                placeholder="Confirm password"
-                            />
-                            <InputError message={errors.password_confirmation} className="mt-2" />
-                        </div>
+            <TextField
+              label="Password"
+              isRequired
+              errorMessage={errors.password}
+              type="password"
+              name="password"
+              autoComplete="new-password"
+              autoFocus
+            />
 
-                        <Button type="submit" className="mt-4 w-full" disabled={processing}>
-                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                            Reset password
-                        </Button>
-                    </div>
-                )}
-            </Form>
-        </AuthLayout>
-    );
+            <TextField
+              label="Confirm Password"
+              type="password"
+              name="password_confirmation"
+              autoComplete="new-password"
+              errorMessage={errors.password_confirmation}
+              isRequired
+            />
+
+            <div className="mt-4 flex items-center justify-end">
+              <Button type="submit" className="ml-4" isPending={processing}>
+                {processing && <Loader />}
+                Reset Password
+              </Button>
+            </div>
+          </>
+        )}
+      </Form>
+    </>
+  )
 }
+
+ResetPassword.layout = (page: any) => (
+  <GuestLayout
+    header="Reset Password"
+    description="Please enter your email address and new password to reset your password."
+    children={page}
+  />
+)

@@ -457,4 +457,141 @@ export default () => (
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
+
+## System / Agent Rules — Intent UI Enforcement
+
+```
+SYSTEM / AGENT RULES — INTENT UI ENFORCEMENT
+
+Goal:
+- All UI code must use Intent UI components and Intent Icons when possible. Do not fall back to other libraries (e.g., Bootstrap, Material UI, Radix) unless explicitly requested.
+
+References:
+- Components: https://intentui.com/components
+- Icons: https://intentui.com/icons
+
+Rules:
+1. **Always use Intent components**: For any requested UI element (buttons, inputs, dialogs, tables, etc.), map it to the closest Intent UI component (e.g., `Button`, `Input`, `Card`, `Dialog`, `Tabs`).
+2. **Icons**: Use icons from `@intentui/icons` exactly as documented. Import explicitly:  
+   `import { IconName } from "@intentui/icons"`.
+3. **Tailwind usage**: Use Tailwind utility classes only when needed. Prefer Intent props/variants for styling.
+4. **Variants & props**: Always demonstrate supported variants (`primary | secondary | ghost | danger` etc.), sizes, and ARIA attributes.
+5. **Accessibility**: Ensure every component has proper labels, roles, and ARIA attributes. Dialogs, tooltips, and forms must be keyboard accessible.
+6. **Theming**: Respect Intent theme tokens (colors, spacing). Do not hardcode styles that break consistency.
+7. **Patterns**:
+   - Forms → controlled components with `value` + `onChange`.
+   - Async actions → show loading states with `Loader`, `Toast`, or similar.
+   - Lists/tables → use `Table`, `List Box`, `Grid List` and pair with `Pagination`.
+8. **Examples**: Always provide a complete React/JSX snippet that is copy-paste ready, with short explanation.
+9. **Fallbacks**: If a requested component does not exist in Intent, suggest the closest available one. If nothing is close, mark as `⚠ custom` and explain migration path.
+10. **Validation before output**: Check that all components and icons exist in the Intent docs before returning code.
+
+Always include:  
+- minimal React snippet  
+- imports from Intent UI + `@intentui/icons`  
+- explanation of why those components were chosen
+```
+
+---
+
+## Quick Mapping Cheat Sheet
+
+* **Buttons** → `Button` (supports `primary`, `secondary`, `ghost`, `danger`)
+* **Forms** → `Form`, `Text Field`, `Textarea`, `Number Field`, `Checkbox`, `Radio Group`
+* **Overlays** → `Dialog`, `Modal`, `Drawer`
+* **Selections** → `Select`, `Combo Box`, `Multiple Select`
+* **Lists/Tables** → `Table`, `List Box`, `Grid List`
+* **Feedback** → `Toast`, `Badge`, `Note`
+* **Icons** → Import from `@intentui/icons`
+
+---
+
+## Example React Snippets
+
+### Button with Icon and Loading State
+
+```jsx
+import React, { useState } from "react";
+import { Button } from "@intentui/components";
+import { Loader, Check } from "@intentui/icons";
+
+export default function SaveButton() {
+  const [loading, setLoading] = useState(false);
+
+  async function handleSave() {
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 1000)); // simulate save
+    setLoading(false);
+  }
+
+  return (
+    <Button onClick={handleSave} variant="primary" aria-label="Save">
+      {loading ? <Loader aria-hidden /> : <Check aria-hidden />}
+      <span className="ml-2">{loading ? "Saving..." : "Save"}</span>
+    </Button>
+  );
+}
+```
+
+---
+
+### Login Dialog with Form
+
+```jsx
+import React from "react";
+import { Dialog, Form, Field, TextField, Button } from "@intentui/components";
+import { X } from "@intentui/icons";
+
+export default function LoginDialog({ open, onClose }) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    // handle login here
+  }
+
+  return (
+    <Dialog isOpen={open} onDismiss={onClose} aria-label="Login dialog">
+      <Dialog.Header>
+        <h2>Login</h2>
+        <Button
+          variant="ghost"
+          onClick={onClose}
+          aria-label="Close dialog"
+        >
+          <X />
+        </Button>
+      </Dialog.Header>
+
+      <Dialog.Body>
+        <Form onSubmit={handleSubmit}>
+          <Field label="Email" name="email">
+            <TextField name="email" type="email" required />
+          </Field>
+          <Field label="Password" name="password">
+            <TextField name="password" type="password" required />
+          </Field>
+          <Button type="submit" variant="primary">Sign in</Button>
+        </Form>
+      </Dialog.Body>
+    </Dialog>
+  );
+}
+```
+
+---
+
+## Quality Checklist for Every Response
+
+* ✅ Used only Intent UI components (check docs)
+* ✅ Imported only from `@intentui/icons`
+* ✅ Accessibility applied (`aria-label`, `onDismiss`, `required`)
+* ✅ Variants and states (loading, disabled) demonstrated
+* ✅ Short explanation included
+
+---
+
+## One-liner Agent Instruction
+
+```
+Always build UI with Intent UI components and Intent Icons only. Return copy-paste ready React examples with proper imports, accessibility, and component variants. If no direct match exists, suggest the closest Intent component and mark fallbacks clearly.
+```
 </laravel-boost-guidelines>
