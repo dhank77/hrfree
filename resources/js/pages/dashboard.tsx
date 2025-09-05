@@ -1,4 +1,4 @@
-import AppLayout from "@/layouts/app-layout"
+import AuthenticatedLayout from "@/layouts/authenticated-layout"
 import { Head } from "@inertiajs/react"
 import { CardHeader } from "@/components/ui/card"
 import { Container } from "@/components/ui/container"
@@ -19,4 +19,4 @@ export default function Dashboard({ auth }: SharedData) {
   )
 }
 
-Dashboard.layout = (page: any) => <AppLayout children={page} />
+Dashboard.layout = (page: any) => <AuthenticatedLayout children={page} title="Dashboard" />

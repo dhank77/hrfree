@@ -1,4 +1,4 @@
-import AppLayout from "@/layouts/app-layout"
+import AuthenticatedLayout from "@/layouts/authenticated-layout"
 
 import { Head } from "@inertiajs/react"
 import { CardHeader } from "@/components/ui/card"
@@ -18,4 +18,4 @@ export default function Home() {
   )
 }
 
-Home.layout = (page: any) => <AppLayout children={page} />
+Home.layout = (page: any) => <AuthenticatedLayout children={page} title="Home" />

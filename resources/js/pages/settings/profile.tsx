@@ -1,4 +1,4 @@
-import AppLayout from "@/layouts/app-layout"
+import AuthenticatedLayout from "@/layouts/authenticated-layout"
 import { Head, useForm, usePage } from "@inertiajs/react"
 import type { SharedData } from "@/types/shared"
 import { Card } from "@/components/ui/card"
@@ -101,7 +101,7 @@ export default function Profile({ mustVerifyEmail, status }: Props) {
 }
 
 Profile.layout = (page: any) => (
-  <AppLayout>
+  <AuthenticatedLayout title="Profile Settings">
     <SettingsLayout children={page} />
-  </AppLayout>
+  </AuthenticatedLayout>
 )

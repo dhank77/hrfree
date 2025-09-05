@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
 import { TextField } from "@/components/ui/text-field"
 import { Button } from "@/components/ui/button"
-import AppLayout from "@/layouts/app-layout"
+import AuthenticatedLayout from "@/layouts/authenticated-layout"
 import SettingsLayout from "@/pages/settings/settings-layout"
 import PasswordController from "@/actions/App/Http/Controllers/Settings/PasswordController"
 
@@ -103,7 +103,7 @@ export default function Password() {
 }
 
 Password.layout = (page: any) => (
-  <AppLayout>
+  <AuthenticatedLayout title="Change Password">
     <SettingsLayout children={page} />
-  </AppLayout>
+  </AuthenticatedLayout>
 )

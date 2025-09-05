@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import AppLayout from "@/layouts/app-layout"
+import AuthenticatedLayout from "@/layouts/authenticated-layout"
 import SettingsLayout from "@/pages/settings/settings-layout"
 import { type Theme, useTheme } from "@/hooks/use-theme"
 import { IconDeviceDesktop2, IconMoon, IconSun } from "@intentui/icons"
@@ -75,7 +75,7 @@ export default function Appearance() {
 }
 
 Appearance.layout = (page: any) => (
-  <AppLayout>
+  <AuthenticatedLayout title="Appearance Settings">
     <SettingsLayout children={page} />
-  </AppLayout>
+  </AuthenticatedLayout>
 )

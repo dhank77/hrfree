@@ -3,7 +3,7 @@ import { Head, useForm } from "@inertiajs/react"
 import { Card } from "@/components/ui/card"
 import { TextField } from "@/components/ui/text-field"
 import { Button } from "@/components/ui/button"
-import AppLayout from "@/layouts/app-layout"
+import AuthenticatedLayout from "@/layouts/authenticated-layout"
 import SettingsLayout from "@/pages/settings/settings-layout"
 import { Modal } from "@/components/ui/modal"
 import ProfileController from "@/actions/App/Http/Controllers/Settings/ProfileController"
@@ -88,7 +88,7 @@ export default function DeleteAccount() {
 }
 
 DeleteAccount.layout = (page: any) => (
-  <AppLayout>
+  <AuthenticatedLayout title="Delete Account">
     <SettingsLayout children={page} />
-  </AppLayout>
+  </AuthenticatedLayout>
 )
