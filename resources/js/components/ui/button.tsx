@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Button as ButtonPrimitive,
   type ButtonProps as ButtonPrimitiveProps,
@@ -98,7 +100,9 @@ const Button = ({ className, intent, size, isCircle, ref, ...props }: ButtonProp
       )}
     >
       {(values) => (
-        <>{typeof props.children === "function" ? props.children(values) : props.children}</>
+        <>
+          {typeof props.children === "function" ? props.children(values) : props.children}
+        </>
       )}
     </ButtonPrimitive>
   )

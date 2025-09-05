@@ -1,4 +1,9 @@
-import { Link as LinkPrimitive, type LinkProps as LinkPrimitiveProps } from "react-aria-components"
+"use client"
+
+import {
+  Link as LinkPrimitive,
+  type LinkProps as LinkPrimitiveProps,
+} from "react-aria-components"
 import { twJoin } from "tailwind-merge"
 import { composeTailwindRenderProps } from "@/lib/primitive"
 
@@ -23,7 +28,9 @@ const Link = ({ className, ref, intent = "unstyled", ...props }: LinkProps) => {
       )}
     >
       {(values) => (
-        <>{typeof props.children === "function" ? props.children(values) : props.children}</>
+        <>
+          {typeof props.children === "function" ? props.children(values) : props.children}
+        </>
       )}
     </LinkPrimitive>
   )
