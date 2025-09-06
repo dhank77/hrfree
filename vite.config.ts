@@ -11,7 +11,7 @@ function findModuleViews(baseDir: string) {
     const modules = fs.readdirSync(modulesPath);
     const views = [];
     modules.forEach(module => {
-      const viewDir = path.join(modulesPath, module, 'view');
+      const viewDir = path.join(modulesPath, module, 'Interface/Views');
       if (fs.existsSync(viewDir)) {
         fs.readdirSync(viewDir).forEach(file => {
           if (file.endsWith('.jsx') || file.endsWith('.tsx')) {
@@ -48,7 +48,7 @@ export default defineConfig({
             ...Object.fromEntries(
                 fs.readdirSync(path.resolve(__dirname, 'app/Modules')).map(module => [
                   `@${module.toLowerCase()}`,
-                  `/app/Modules/${module}/Interface/Views`,
+                  path.resolve(__dirname, `app/Modules/${module}/Interface/Views`),
                 ])
             ),
         },
