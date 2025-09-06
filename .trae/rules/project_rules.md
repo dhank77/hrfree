@@ -484,27 +484,28 @@ This project uses **hitech/ddd-modular-toolkit** to scaffold Domain-Driven Desig
 
 app/
 └── Modules/
-└── {ModuleName}/
-├── Application/
-│   ├── Data/        # Laravel Data classes for validation/transformation (optional)
-│   ├── DTO/         # Data Transfer Objects (immutable)
-│   └── Services/    # Application services / use cases
-├── Domain/
-│   ├── Contracts/   # Interfaces (repositories, domain services)
-│   ├── Entities/    # Domain entities
-│   ├── Constants/   # Domain constants
-│   └── Enums/       # Domain enums
-├── Infrastructure/
-│   ├── Database/
-│   │   ├── Migrations/
-│   │   ├── Models/  # Eloquent models
-│   │   └── Seeders/
-│   └── Repositories/ # Implementations of Contracts
-└── Interface/
-├── Controllers/ # HTTP controllers
-├── Requests/    # FormRequests (+ helper toDTO() → DTO)
-├── Resources/   # API Resources
-└── Routes/      # Route definitions
+    └── {ModuleName}/
+        ├── Application/
+        │   ├── Data/        # Laravel Data classes for validation/transformation (optional)
+        │   ├── DTO/         # Data Transfer Objects (immutable)
+        │   └── Services/    # Application services / use cases
+        ├── Domain/
+        │   ├── Contracts/   # Interfaces (repositories, domain services)
+        │   ├── Entities/    # Domain entities
+        │   ├── Constants/   # Domain constants
+        │   └── Enums/       # Domain enums
+        ├── Infrastructure/
+        │   ├── Database/
+        │   │   ├── Migrations/
+        │   │   ├── Models/  # Eloquent models
+        │   │   └── Seeders/
+        │   └── Repositories/ # Implementations of Contracts
+        └── Interface/
+            ├── Controllers/ # HTTP controllers
+            ├── Requests/    # FormRequests (+ helper toDTO() → DTO)
+            ├── Resources/   # API Resources
+            └── Routes/      # Route definitions
+            └── Views/       # React views (coming soon)
 
 
 ### Generators (Artisan Commands)
