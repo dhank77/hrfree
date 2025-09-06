@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->foreignId('department_id')->constrained()->onDelete('cascade');
+            $table->decimal('min_salary', 12, 2)->nullable();
+            $table->decimal('max_salary', 12, 2)->nullable();
+            $table->enum('level', ['entry', 'junior', 'mid', 'senior', 'lead', 'manager', 'director', 'executive']);
+            $table->json('requirements')->nullable();
+            $table->json('responsibilities')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->index(['department_id', 'level', 'is_active']);
         });
     }
 
