@@ -17,5 +17,10 @@
         "lib": "@/lib",
         "hooks": "@/hooks"
     },
-    "iconLibrary": "lucide"
+    "iconLibrary": "lucide",
+    "registries": {
+        "@acertinity": "https://ui.acertinity.com/registry/{name}.json",
+        "@originui": "https://ui.originui.com/r/{name}.json",
+        "@kibo": "https://kibo-ui.com/r/{name}.json"
+    }
 }
