@@ -457,4 +457,110 @@ export default () => (
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
+
+Got it ✅ — here’s the **DDD Modular Toolkit** rules rewritten in **English**, polished and consistent with the style of your existing `<laravel-boost-guidelines>` document:
+
+## DDD Modular Toolkit (hitech/ddd-modular-toolkit)
+
+This project uses **hitech/ddd-modular-toolkit** to scaffold Domain-Driven Design (DDD) modules on Laravel 12. Follow these rules to ensure modules remain consistent with the toolkit conventions.
+
+### Installation & Publish (one time)
+- Install: `composer require hitech/ddd-modular-toolkit`
+- Publish config/provider:
+  - `php artisan vendor:publish --provider="Hitech\DddModularToolkit\Providers\DddModularToolkitServiceProvider"`
+  - or `php artisan vendor:publish --tag=ddd-config`
+
+### Configuration (`config/ddd.php`)
+- `blade.is_active` (bool) – enable/disable Blade templating in modules (default: `true`)
+- `blade.path` (string) – folder for Blade views in a module (default: `Blades`)
+- `react.is_active` (bool) – enable/disable React templating (coming soon) (default: `true`)
+- `react.path` (string) – folder for React views (default: `Views`)
+- `middleware.auth` (bool) – apply `auth` middleware to module routes (default: `false`)
+- `middleware.api` (bool) – apply `api` middleware to module routes (default: `false`)
+
+> Important: Control route middleware via this config file. Do not hardcode in route definitions.
+
+### Generated Folder Structure
+
+app/
+└── Modules/
+└── {ModuleName}/
+├── Application/
+│   ├── Data/        # Laravel Data classes for validation/transformation (optional)
+│   ├── DTO/         # Data Transfer Objects (immutable)
+│   └── Services/    # Application services / use cases
+├── Domain/
+│   ├── Contracts/   # Interfaces (repositories, domain services)
+│   ├── Entities/    # Domain entities
+│   ├── Constants/   # Domain constants
+│   └── Enums/       # Domain enums
+├── Infrastructure/
+│   ├── Database/
+│   │   ├── Migrations/
+│   │   ├── Models/  # Eloquent models
+│   │   └── Seeders/
+│   └── Repositories/ # Implementations of Contracts
+└── Interface/
+├── Controllers/ # HTTP controllers
+├── Requests/    # FormRequests (+ helper toDTO() → DTO)
+├── Resources/   # API Resources
+└── Routes/      # Route definitions
+
+
+### Generators (Artisan Commands)
+**Create modules, submodules, and components:**
+- Syntax: `php artisan make:module {name}:{submodule} [options]`
+- Options:
+  - `-A|--all` → generate all components
+  - `-D|--data` → generate Application/Data (requires spatie/laravel-data)
+  - `-Y|--dto` → generate DTO
+  - `-M|--migration` → generate migration
+  - `-O|--model` → generate model
+  - `-R|--repository` → generate repository
+  - `-S|--service` → generate service
+  - `-C|--controller` → generate controller
+  - `-Q|--request` → generate FormRequest
+  - `-E|--resource` → generate API Resource
+  - `-T|--route` → generate route file
+  - `-X|--seeder` → generate seeder
+
+**Examples:**
+- `php artisan make:module Product --all`
+- `php artisan make:module Product:Category --all`
+- `php artisan make:module Order --controller --service`
+- `php artisan make:module Order:Cart --controller --service`
+- `php artisan make:module User -R -O`
+- `php artisan make:module User:Role -R -O`
+
+**Modify table via migration helper:**
+- Syntax: `php artisan modify:migration {module} {table} [options]`
+- Options:
+  - `--add-column=` / `--ac=`
+  - `--rename-column=` / `--rc=`
+  - `--drop-column=` / `--dc=`
+  - `--modify-column=` / `--mc=`
+- Examples:
+  - `php artisan modify:migration Contract contracts --ac=status:string`
+  - `php artisan modify:migration User users --rc=name:full_name`
+  - `php artisan modify:migration Product products --dc=temp_field`
+  - `php artisan modify:migration Order orders --ac=notes:text --dc=old_field`
+
+### Architectural Conventions
+- **Domain layer is pure PHP**: no dependencies on Laravel or Eloquent.
+- **Contracts live in Domain**, implementations in `Infrastructure/Repositories`.
+- **Requests → DTOs**: FormRequests in `Interface/Requests` expose a `toDTO()` helper to convert validated input into DTOs under `Application/DTO`.
+- **Application Services**: orchestrate use cases in `Application/Services`. Avoid business logic in Controllers or Models.
+- **Models in Infrastructure**: do not leak Eloquent models into Domain. Use repositories/DTOs as boundaries.
+- **Resources**: serialize API responses via `Interface/Resources`.
+- **Routes**: defined in `Interface/Routes`, protected with middleware controlled by `config/ddd.php`.
+
+### Integration with Existing Rules
+- **Base Directory**: only `app/Modules` is allowed as a new top-level folder.
+- **Artisan-first**: always prefer toolkit generators before writing files manually. Use Boost’s `list-artisan-commands` to explore options.
+- **Testing**:
+  - Unit tests → Domain (entities, value objects, domain services).
+  - Feature/integration tests → Application & Interface layers.
+  - Infrastructure (repositories) → integration tests if needed.
+- **Formatting**: always run `vendor/bin/pint --dirty` before finalizing changes.
+
 </laravel-boost-guidelines>
